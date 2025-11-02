@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.DS_Store
+.env
+*.log
+coverage/
+.turbo/
+.vite/
+apps/api/dist/
+apps/web/dist/
+apps/api/node_modules/
+apps/web/node_modules/
+docker-data/
+/**/.husky/_

@@ -1,0 +1,40 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Hotel Booking API",
+    "version": "1.0.0"
+  },
+  "servers": [{ "url": "http://localhost:3000/api/v1" }],
+  "paths": {
+    "/auth/signup": { "post": { "summary": "Signup", "responses": { "200": { "description": "OK" } } } },
+    "/auth/login": { "post": { "summary": "Login", "responses": { "200": { "description": "OK" } } } },
+    "/auth/refresh": { "post": { "summary": "Refresh token", "responses": { "200": { "description": "OK" } } } },
+    "/room-types": {
+      "get": { "summary": "List room types", "responses": { "200": { "description": "OK" } } },
+      "post": { "summary": "Create room type", "responses": { "201": { "description": "Created" } } }
+    },
+    "/rooms": {
+      "get": { "summary": "List rooms", "responses": { "200": { "description": "OK" } } },
+      "post": { "summary": "Create room", "responses": { "201": { "description": "Created" } } }
+    },
+    "/seasons": {
+      "get": { "summary": "List seasons", "responses": { "200": { "description": "OK" } } },
+      "post": { "summary": "Create season", "responses": { "201": { "description": "Created" } } }
+    },
+    "/price-rules": {
+      "get": { "summary": "List price rules", "responses": { "200": { "description": "OK" } } },
+      "post": { "summary": "Create price rule", "responses": { "201": { "description": "Created" } } }
+    },
+    "/pricing/quote": { "get": { "summary": "Get quote", "responses": { "200": { "description": "OK" } } } },
+    "/bookings": {
+      "get": { "summary": "List bookings", "responses": { "200": { "description": "OK" } } },
+      "post": { "summary": "Create booking", "responses": { "201": { "description": "Created" } } }
+    },
+    "/bookings/{id}": { "get": { "summary": "Get booking", "responses": { "200": { "description": "OK" } } } },
+    "/bookings/{id}/status": { "patch": { "summary": "Update booking status", "responses": { "200": { "description": "OK" } } } },
+    "/payments/intent": { "post": { "summary": "Payment intent (mock)", "responses": { "200": { "description": "OK" } } } },
+    "/payments/webhook": { "post": { "summary": "Payment webhook (mock)", "responses": { "200": { "description": "OK" } } } },
+    "/reports/occupancy": { "get": { "summary": "Occupancy report", "responses": { "200": { "description": "OK" } } } },
+    "/reports/revenue": { "get": { "summary": "Revenue report", "responses": { "200": { "description": "OK" } } } }
+  }
+}

@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  OWNER
+  STAFF
+  GUEST
+}
+
+enum RoomStatus {
+  AVAILABLE
+  MAINTENANCE
+  CLEANING
+}
+
+enum BookingStatus {
+  PENDING
+  PAID
+  CANCELLED
+  CHECKED_IN
+  CHECKED_OUT
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role
+  createdAt    DateTime @default(now())
+}
+
+model RoomType {
+  id          String  @id @default(uuid())
+  name        String
+  capacity    Int
+  basePrice   Decimal @db.Decimal(10,2)
+  description String?
+  rooms       Room[]
+}
+
+model Room {
+  id          String      @id @default(uuid())
+  number      String      @unique
+  roomTypeId  String
+  status      RoomStatus  @default(AVAILABLE)
+  roomType    RoomType    @relation(fields: [roomTypeId], references: [id])
+  bookings    Booking[]
+  maintenance Maintenance[]
+}
+
+model Season {
+  id             String   @id @default(uuid())
+  name           String
+  startDate      DateTime
+  endDate        DateTime
+  priceMultiplier Decimal  @db.Decimal(10,2)
+}
+
+enum RuleType {
+  WEEKEND
+  HOLIDAY
+  LAST_MINUTE
+  LONG_STAY
+}
+
+enum RuleOperator {
+  MULTIPLY
+  ADD
+  SUBTRACT
+}
+
+model PriceRule {
+  id         String       @id @default(uuid())
+  ruleType   RuleType
+  value      Decimal      @db.Decimal(10,2)
+  operator   RuleOperator
+  minNights  Int?
+}
+
+model Booking {
+  id        String        @id @default(uuid())
+  code      String        @unique
+  roomId    String
+  guestName String
+  guestEmail String
+  checkIn   DateTime
+  checkOut  DateTime
+  guests    Int
+  status    BookingStatus @default(PENDING)
+  total     Decimal       @db.Decimal(10,2)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  room      Room          @relation(fields: [roomId], references: [id])
+  payments  Payment[]
+}
+
+model Payment {
+  id           String        @id @default(uuid())
+  bookingId    String
+  amount       Decimal       @db.Decimal(10,2)
+  method       String
+  status       PaymentStatus @default(PENDING)
+  transactionId String?
+  createdAt    DateTime      @default(now())
+  booking      Booking       @relation(fields: [bookingId], references: [id])
+}
+
+model Maintenance {
+  id        String   @id @default(uuid())
+  roomId    String
+  startDate DateTime
+  endDate   DateTime
+  note      String?
+  room      Room     @relation(fields: [roomId], references: [id])
+}

@@ -1,0 +1,52 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16
+    container_name: hotel_db
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hotel
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  api:
+    image: node:18
+    container_name: hotel_api
+    working_dir: /usr/src/app
+    volumes:
+      - ./apps/api:/usr/src/app
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://postgres:postgres@db:5432/hotel
+      JWT_ACCESS_SECRET: dev_access_secret
+      JWT_REFRESH_SECRET: dev_refresh_secret
+      TIMEZONE: America/Sao_Paulo
+      CHECKIN_HOUR: '14'
+      CHECKOUT_HOUR: '12'
+      ENABLE_STRIPE: 'false'
+    depends_on:
+      - db
+    command: sh -c "npm install && npx prisma generate && npx prisma migrate deploy && npm run dev"
+
+  web:
+    image: node:18
+    container_name: hotel_web
+    working_dir: /usr/src/app
+    volumes:
+      - ./apps/web:/usr/src/app
+    ports:
+      - '5173:5173'
+    environment:
+      VITE_API_BASE_URL: http://localhost:3000/api/v1
+    depends_on:
+      - api
+    command: sh -c "npm install && npm run dev"
+
+volumes:
+  db-data:
+    driver: local
