@@ -1,75 +1,142 @@
-Projeto monorepo com `apps/api` (Express + Prisma + Swagger) e `apps/web` (React + Vite + MUI).
+Monorepo – API (Express + Prisma + Swagger) & Web (React + Vite + MUI)
 
-## Requisitos
+Este projeto é um monorepo contendo:
 
-- Node.js 18+
+API — Express + Prisma + JWT + Swagger
 
-- NPM 9+
+Web — React + Vite + Material UI
 
-- Docker Desktop (opcional, para Postgres via Compose)
+Banco — Postgres 16 (Docker ou local)
 
-## Configuração
+Organizado em npm workspaces dentro de apps/.
 
-1. Instale dependências:
-
-- `npm install`
-
-2. Variáveis de ambiente (dev):
-
-- Crie `apps/api/.env` com:
-
-- `DATABASE_URL=postgres://postgres:postgres@localhost:5432/hotel`
-
-- `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `TIMEZONE`, `CHECKIN_HOUR`, `CHECKOUT_HOUR`, `CORS_ORIGIN`
-
-- `.gitignore` já ignora `.env`.
-
-## Banco de Dados
-
-### Docker Compose
-
+📁 Estrutura
 ```
+.
+├─ apps/
+│  ├─ api/   → Backend (Express, Prisma, Swagger)
+│  └─ web/   → Frontend (React, Vite, MUI)
+└─ package.json  → Workspaces
+```
+✅ Requisitos
 
+Node.js 18+
+
+NPM 9+
+
+Docker Desktop (opcional, para Postgres via Docker Compose)
+
+🔧 Instalação
+npm install
+
+🔐 Variáveis de Ambiente (API)
+
+Crie o arquivo:
+
+apps/api/.env
+
+
+Com o conteúdo:
+
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/hotel
+
+JWT_ACCESS_SECRET=sua-chave
+JWT_REFRESH_SECRET=sua-chave
+
+TIMEZONE=America/Sao_Paulo
+CHECKIN_HOUR=14
+CHECKOUT_HOUR=12
+
+CORS_ORIGIN=http://localhost:5173
+
+
+.gitignore já ignora .env.
+
+🗄️ Banco de Dados
+✅ Usando Docker (Recomendado)
 docker compose up -d db
 
 npm run -w apps/api db:generate
-
 npm run -w apps/api db:migrate
-
 npm run -w apps/api db:seed
 
-```
+✅ Postgres Local
 
-### Postgres local
+Configure:
 
-Configure um servidor Postgres 16 em `localhost:5432` com o banco `hotel` e usuário `postgres/postgres`. Use o mesmo `DATABASE_URL` e rode `db:generate`, `db:migrate`, `db:seed`.
+host: localhost
 
-## Desenvolvimento
+port: 5432
 
-- API: `npm run -w apps/api dev` (Swagger: `http://localhost:3000/api-docs`)
+db: hotel
 
-- Web: `npm run -w apps/web dev` (`http://localhost:5173`)
+user: postgres
 
-## Testes
+pass: postgres
 
-- API (Jest): `npm run -w apps/api test`
+Depois execute:
 
-- Requer Postgres acessível e migrações aplicadas.
+npm run -w apps/api db:generate
+npm run -w apps/api db:migrate
+npm run -w apps/api db:seed
 
-## Build
+🧑‍💻 Desenvolvimento
+API
+npm run -w apps/api dev
 
-- Web: `npm run -w apps/web build`
 
-- API Prod: `npm run -w apps/api build` (corrija eventuais erros de tipos antes).
+Swagger:
+👉 http://localhost:3000/api-docs
 
-## Segurança
+Web
+npm run -w apps/web dev
 
-- JWT, CORS e rate-limit habilitados na API.
 
-- `.env`, `dist/`, `node_modules/` e artefatos estão ignorados pelo Git.
+Frontend:
+👉 http://localhost:5173
 
-## Troubleshooting
+🧪 Testes
 
-- Erro de conexão Prisma: verifique `DATABASE_URL` e se Postgres está rodando.
+(Backend – Jest)
 
-- Falhas de build Web por tipos: instale `@types` faltantes ou ajuste props conforme MUI.
+npm run -w apps/api test
+
+
+Requer Postgres rodando + migrações aplicadas.
+
+🏗️ Build
+Web (Vite)
+npm run -w apps/web build
+
+API (TypeScript)
+npm run -w apps/api build
+
+
+Corrija erros de tipos antes de buildar.
+
+🔒 Segurança
+
+JWT (access + refresh)
+
+CORS configurado
+
+Rate-limit habilitado
+
+.env, dist/, node_modules/ ignorados pelo Git
+
+🛠️ Troubleshooting
+❗Erro Prisma: "Failed to connect"
+
+Verifique DATABASE_URL
+
+Confirme se Postgres está rodando
+
+Execute novamente:
+
+npm run -w apps/api db:generate
+
+❗Erro no build do Web por tipos
+
+Instale @types faltantes
+
+Corrija props do MUI
