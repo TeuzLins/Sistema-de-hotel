@@ -1,142 +1,118 @@
-Monorepo – API (Express + Prisma + Swagger) & Web (React + Vite + MUI)
+# Monorepo – API (Express/Prisma/Swagger) + Web (React/Vite/MUI)
 
-Este projeto é um monorepo contendo:
+Este projeto implementa um sistema completo com backend (Node/Express/Prisma) e frontend (React/Vite/MUI) usando npm workspaces em um monorepo.
+Inclui autenticação JWT, ORM Prisma, Swagger, rate-limit, CORS e integração com Postgres.
 
-API — Express + Prisma + JWT + Swagger
+## Como executar o projeto
 
-Web — React + Vite + Material UI
+Requisitos:
 
-Banco — Postgres 16 (Docker ou local)
+• Node.js 18+
+• NPM 9+
+• Docker Desktop (opcional)
+• Postgres 16 (local ou via Docker Compose)
 
-Organizado em npm workspaces dentro de apps/.
-
-📁 Estrutura
-```
-.
-├─ apps/
-│  ├─ api/   → Backend (Express, Prisma, Swagger)
-│  └─ web/   → Frontend (React, Vite, MUI)
-└─ package.json  → Workspaces
-```
-✅ Requisitos
-
-Node.js 18+
-
-NPM 9+
-
-Docker Desktop (opcional, para Postgres via Docker Compose)
-
-🔧 Instalação
+```bash
+# 1) Instalar dependências
 npm install
 
-🔐 Variáveis de Ambiente (API)
-
+# 2) Criar variáveis de ambiente (API)
 Crie o arquivo:
-
 apps/api/.env
-
-
 Com o conteúdo:
 
 DATABASE_URL=postgres://postgres:postgres@localhost:5432/hotel
-
 JWT_ACCESS_SECRET=sua-chave
 JWT_REFRESH_SECRET=sua-chave
 
 TIMEZONE=America/Sao_Paulo
 CHECKIN_HOUR=14
 CHECKOUT_HOUR=12
-
 CORS_ORIGIN=http://localhost:5173
 
-
-.gitignore já ignora .env.
-
-🗄️ Banco de Dados
-✅ Usando Docker (Recomendado)
+# 3) Subir Banco (Docker)
 docker compose up -d db
 
+# 4) Gerar Prisma + Migrar + Seed
 npm run -w apps/api db:generate
 npm run -w apps/api db:migrate
 npm run -w apps/api db:seed
 
-✅ Postgres Local
-
-Configure:
-
-host: localhost
-
-port: 5432
-
-db: hotel
-
-user: postgres
-
-pass: postgres
-
-Depois execute:
-
-npm run -w apps/api db:generate
-npm run -w apps/api db:migrate
-npm run -w apps/api db:seed
-
-🧑‍💻 Desenvolvimento
-API
+# 5) Rodar a API
 npm run -w apps/api dev
 
-
-Swagger:
-👉 http://localhost:3000/api-docs
-
-Web
+# 6) Rodar o Frontend
 npm run -w apps/web dev
+```
+## Estrutura do Monorepo
+```
+root/
+├─ apps/
+│  ├─ api/
+│  │  ├─ prisma/
+│  │  ├─ src/
+│  │  ├─ .env   (ignorado pelo git)
+│  │  └─ package.json
+│  └─ web/
+│     ├─ src/
+│     ├─ public/
+│     └─ package.json
+├─ node_modules/
+├─ package.json   (npm workspaces)
+└─ docker-compose.yml
+```
+# O que foi aplicado:
+Backend (API – Express + Prisma)
+• JWT (access + refresh)
+• Autenticação protegendo rotas privadas
+• Rate-limit para evitar abuso
+• CORS configurado para ambiente local
+• Swagger para documentação da API
+• Prisma ORM com migrations, seed e Prisma Client
+• Estrutura limpa com controllers, services, middlewares, validators
 
 
-Frontend:
-👉 http://localhost:5173
+# Frontend (Web – React + Vite + MUI)  
+• Componentização usando Material UI
+• Requisições com JWT
+• Hooks organizando lógica de estado
+• Proteção de rotas no front
+• Uso de Vite para rápido desenvolvimento
 
-🧪 Testes
+# Monorepo
+• Organização via npm workspaces
+• Comandos por workspace (-w apps/api, -w apps/web)
+• Dependências isoladas por aplicação
 
-(Backend – Jest)
-
+# Testes (API – Jest)
+```
 npm run -w apps/api test
+```
+# Requer:
+• Postgres rodando
+• Migrações já aplicadas
 
-
-Requer Postgres rodando + migrações aplicadas.
-
-🏗️ Build
-Web (Vite)
-npm run -w apps/web build
-
-API (TypeScript)
-npm run -w apps/api build
-
-
-Corrija erros de tipos antes de buildar.
-
-🔒 Segurança
-
-JWT (access + refresh)
-
-CORS configurado
-
-Rate-limit habilitado
-
-.env, dist/, node_modules/ ignorados pelo Git
-
-🛠️ Troubleshooting
-❗Erro Prisma: "Failed to connect"
-
-Verifique DATABASE_URL
-
-Confirme se Postgres está rodando
-
-Execute novamente:
-
+# Troubleshooting
+Prisma não conecta
+• Verifique DATABASE_URL
+• Confirme se Postgres está rodando
+Rode:
+```
 npm run -w apps/api db:generate
+```
+# Problemas de build no Web
+• Instale @types faltantes
+• Corrija tipos do MUI nas props
 
-❗Erro no build do Web por tipos
+# CORS bloqueando requisição
+• Ajuste CORS_ORIGIN no .env
+• Ou ative proxy no Vite
 
-Instale @types faltantes
+# O que o projeto demonstra
 
-Corrija props do MUI
+• API escalável com Express + Prisma
+• Documentação viva com Swagger
+• Autenticação real com JWT
+• Integração de front + back em monorepo
+• Controle de banco real com migrations
+• Web moderna com React + Vite + MUI
